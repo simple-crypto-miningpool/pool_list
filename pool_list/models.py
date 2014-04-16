@@ -11,14 +11,33 @@ from .model_lib import base
 from . import db
 
 
+def cached_property(f):
+    """returns a cached property that is calculated by function f"""
+    def get(self):
+        try:
+            return self._property_cache[f]
+        except AttributeError:
+            self._property_cache = {}
+            x = self._property_cache[f] = f(self)
+            return x
+        except KeyError:
+            x = self._property_cache[f] = f(self)
+            return x
+
+    return property(get)
+
+
 class Pool(base):
     """ This class stores metadata on all blocks found by the pool """
     # the hash of the block for orphan checking
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    payout_type = db.Column(db.String)
+    fee = db.Column(db.Float)
     typ = db.Column(db.String, nullable=False)
     link = db.Column(db.String)
     api_link = db.Column(db.String)
+    last_checkin = db.Column(db.DateTime)
 
     @classmethod
     def create(cls, name, typ, link, api_link):
@@ -28,15 +47,46 @@ class Pool(base):
         db.session.flush()
         return pool
 
-    def last_hashrate(self):
-        return (FifteenMinutePool.query.
-                filter_by(typ='hashrate', pool=self.id).
-                order_by(FifteenMinutePool.time.desc()).first().value)
+    def get_last_hashrate(self):
+        """ Returns hashrate from the last sample in MH/s """
+        try:
+            return (FifteenMinutePool.query.
+                    filter_by(typ='hashrate', pool=self.id).
+                    order_by(FifteenMinutePool.time.desc()).first().value) / 1000.0
+        except AttributeError:
+            return None
 
-    def last_workers(self):
-        return (FifteenMinutePool.query.
-                filter_by(typ='workers', pool=self.id).
-                order_by(FifteenMinutePool.time.desc()).first().value)
+    def get_last_workers(self):
+        """ Returns workers from the last sample """
+        try:
+            return (FifteenMinutePool.query.
+                    filter_by(typ='workers', pool=self.id).
+                    order_by(FifteenMinutePool.time.desc()).first().value)
+        except AttributeError:
+            return None
+
+    @property
+    def output_payout_type(self):
+        if self.payout_type:
+            return self.payout_type
+        return "Unknown"
+
+    @property
+    def output_fee(self):
+        if self.fee:
+            return str(self.payout_type) + "%"
+        return "Unknown"
+
+    @property
+    def average_worker(self):
+        hr = self.last_hashrate
+        wrk = self.last_workers
+        if hr and wrk:
+            return round(hr / wrk * 1000, 2)
+        return 0
+
+    last_workers = cached_property(get_last_workers)
+    last_hashrate = cached_property(get_last_hashrate)
 
 
 class SliceMixin(object):

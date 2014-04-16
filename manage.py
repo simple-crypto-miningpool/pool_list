@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 root = os.path.abspath(os.path.dirname(__file__) + '/../')
 
 from pool_list.models import Pool
-from pool_list.tasks import update_pools
+from pool_list.tasks import update_pools, update_payout_type
 from flask import current_app, _request_ctx_stack
 
 root = logging.getLogger()
@@ -52,6 +52,12 @@ def init_db():
 def update_pools_cmd():
     """ Manually runs the poll pools command """
     update_pools()
+
+
+@manager.command
+def update_payout_type_cmd():
+    """ Manually runs the update payout types command for mpos pools"""
+    update_payout_type()
 
 
 def make_context():

@@ -10,6 +10,10 @@ database_tasks = {
         'task': 'pool_list.tasks.update_pools',
         'schedule': timedelta(minutes=15),
     },
+    'update_net_state': {
+        'task': 'pool_list.tasks.update_net_state',
+        'schedule': timedelta(minutes=15),
+    },
 }
 
 CELERYBEAT_SCHEDULE = caching_tasks
