@@ -8,7 +8,7 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-  <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ config['assets_address'] | safe }}/css/main.css?revision={{ config['hash'] }}">
   <link rel="stylesheet" href="{{ config['assets_address'] | safe }}/css/nv.d3.css?revision={{ config['hash'] }}">
   <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
@@ -23,11 +23,16 @@
 <body>
   <div class="container">
     <div class="row">
-      <h1 style="font-size:51px;">
-        <a style=" text-decoration:none;" href="/">
-          <p>&nbsp;Simple&nbsp;Vert Pool List</p>
-        </a>
-      </h1>
+      <center>
+        <h1 style="font-size:51px;">
+          <a style="text-decoration:none;" href="http://simplevert.com">
+            <p>
+              <img src="{{ config['assets_address'] | safe }}/img/pool.jpg" />
+              &nbsp;Simple&nbsp;Vert Pool List
+            </p>
+          </a>
+        </h1>
+      </center>
     </div>
 
   <!-- Alerts ================================================== -->
