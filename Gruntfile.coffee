@@ -16,7 +16,7 @@ module.exports = (grunt) ->
 
     watch:
       dev_server:
-        files: ['simplecoin/**/*.py', 'config.yml', 'uwsgi.yml']
+        files: ['pool_list/**/*.py', 'config.yml', 'uwsgi.yml']
         tasks: ['shell:reload']
         options:
           atBegin: true

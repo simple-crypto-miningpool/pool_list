@@ -12,6 +12,7 @@ migrate = Migrate(app, db)
 root = os.path.abspath(os.path.dirname(__file__) + '/../')
 
 from pool_list.models import Pool
+from pool_list.tasks import update_pools
 from flask import current_app, _request_ctx_stack
 
 root = logging.getLogger()
@@ -28,6 +29,16 @@ root.addHandler(hdlr)
 root.setLevel(logging.DEBUG)
 
 
+@manager.option('name', help="The name of the pool to add to the list")
+@manager.option('url', help="The url to navigate to the pool")
+@manager.option('api_url', help="The url information used to gather data")
+@manager.option('typ', help="The type of api")
+def add_pool(typ, api_url, url, name):
+    """ Manually create a BonusPayout for a user """
+    Pool.create(name, typ, url, api_url)
+    db.session.commit()
+
+
 @manager.command
 def init_db():
     """ Resets entire database to empty state """
@@ -35,6 +46,12 @@ def init_db():
         db.session.commit()
         db.drop_all()
         db.create_all()
+
+
+@manager.command
+def update_pools_cmd():
+    """ Manually runs the poll pools command """
+    update_pools()
 
 
 def make_context():

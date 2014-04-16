@@ -1,9 +1,10 @@
 import calendar
 import logging
+import sqlalchemy
+
 from collections import namedtuple
-
+from flask import current_app
 from datetime import datetime, timedelta
-
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 
 from .model_lib import base
@@ -27,14 +28,18 @@ class Pool(base):
         db.session.flush()
         return pool
 
+    def last_hashrate(self):
+        return (FifteenMinutePool.query.
+                filter_by(typ='hashrate', pool=self.id).
+                order_by(FifteenMinutePool.time.desc()).first().value)
+
+    def last_workers(self):
+        return (FifteenMinutePool.query.
+                filter_by(typ='workers', pool=self.id).
+                order_by(FifteenMinutePool.time.desc()).first().value)
+
 
 class SliceMixin(object):
-    @classmethod
-    def create(cls, user, value, time, worker):
-        dt = cls.floor_time(time)
-        slc = cls(user=user, value=value, time=dt, worker=worker)
-        db.session.add(slc)
-        return slc
 
     @classmethod
     def add_value(cls, user, value, time, worker):
@@ -109,11 +114,29 @@ class SliceMixin(object):
 
 class PoolTimeSlice(AbstractConcreteBase, SliceMixin, base):
     pool = db.Column(db.Integer, primary_key=True)
+    typ = db.Column(db.String, primary_key=True)
     time = db.Column(db.DateTime, primary_key=True)
     value = db.Column(db.Integer)
 
     @classmethod
-    def combine(cls, *lst):
+    def create(cls, pool_obj, typ, time, value):
+        dt = cls.floor_time(time)
+        try:
+            m = FifteenMinutePool(typ=typ, value=value, time=dt, pool=pool_obj.id)
+            db.session.add(m)
+            db.session.commit()
+            return m
+        except sqlalchemy.exc.IntegrityError:
+            db.session.rollback()
+            slc = cls.query.with_lockmode('update').filter_by(
+                time=dt, typ=typ, pool=pool_obj.id).one()
+            # just average the diff of two blocks that occured in the same second..
+            slc.value = (value + slc.value) / 2
+            db.session.commit()
+            return slc
+
+    @classmethod
+    def combine_avg(cls, *lst):
         """ Takes an iterable and combines the values. Usually either returns
         an average or a sum. Can assume at least one item in list """
         return sum(lst) / len(lst)
