@@ -1,0 +1,72 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Simple Vert Pool List</title>
+  <meta name="description" content="A list of different Vert Coin mining pools and basic statistics for them">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ config['assets_address'] | safe }}/css/main.css?revision={{ config['hash'] }}">
+  <link rel="stylesheet" href="{{ config['assets_address'] | safe }}/css/nv.d3.css?revision={{ config['hash'] }}">
+  <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/1.3.3/ZeroClipboard.min.js"></script>
+  <script src="{{ config['assets_address'] | safe }}/js/nv.d3.min.js"></script>
+  <script src="{{ config['assets_address'] | safe }}/js/graph.js?revision={{ config['hash'] }}"></Script>
+  <script src="{{ config['assets_address'] | safe }}/js/bootstrap.min.js"></Script>
+  <script src="{{ config['assets_address'] | safe }}/js/jquery.tablesorter.min.js"></Script>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <h1 style="font-size:51px;">
+        <a style=" text-decoration:none;" href="/">
+          <p>&nbsp;Simple&nbsp;Vert Pool List</p>
+        </a>
+      </h1>
+    </div>
+
+  <!-- Alerts ================================================== -->
+  {% if g.alerts  %}
+    {% for alert in g.alerts %}
+    {# Check to see if the alert has been dismissed by the user #}
+    {% if not alert['key'] in session['dismissed_alerts'] %}
+    <div data-alert-id={{ alert['key'] }} class="alert alert-dismissable alert-{{ alert['severity'] }}">
+      <button type="button" class="close" data-dismiss="alert" >×</button>
+      <h4>{{ alert['title']|safe }} -
+        <span class="text-muted small" style="color:#fff;">
+          {{ alert['date'] }}
+        </span>
+      </h4>
+      <p>{{ alert['body']|safe }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% block body %}
+
+  {% endblock %}
+  {% block footer %}
+  <div class="row" style="padding-top:30px;padding-bottom:20px;">
+    <div class="col-lg-8 col-lg-offset-2 text-center">
+      <br>
+      <small>
+        {% if 'repopath' in config %}
+        Running revision <a href="{{ config['repopath'] }}{{ config['hash'] }}">{{ config['hash'] }}</a> released on {{ config['revdate'] }}.
+        {% endif %}
+        <br>
+        Donate to the devs:
+        DOGE <a href="dogecoin:DAbhwsnEq5TjtBP5j76TinhUqqLTktDAnD">DAbhwsnEq5TjtBP5j76TinhUqqLTktDAnD</a><br>
+        BTC <a href="bitcoin:185cYTmEaTtKmBZc8aSGCr9v2VCDLqQHgR">185cYTmEaTtKmBZc8aSGCr9v2VCDLqQHgR</a><br>
+        VTC <a href="vertcoin:VkbHY8ua2TjxdL7gY2uMfCz3TxMzMPgmRR">VkbHY8ua2TjxdL7gY2uMfCz3TxMzMPgmRR</a>
+    </div>
+  </div>
+  {% endblock %}
+  </div>
+</body>
+</html>
