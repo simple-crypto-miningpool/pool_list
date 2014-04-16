@@ -49,13 +49,16 @@
   </div>
 </div>
 
-<div>
-  <div id="chart2">
-    <svg></svg>
-  </div>
+<h2>Network Breakdown</h2>
+<div id="chart2">
+  <svg></svg>
 </div>
 
 <script>
+//Pie chart example data. Note how there is only a single array of key-value pairs.
+function exampleData() {
+  return  {{ top_pools | tojson }};
+}
 $(document).ready(function() {
   $("#poolTable").tablesorter({
     headers: {

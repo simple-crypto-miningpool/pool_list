@@ -27,9 +27,9 @@ def update_net_stats(self):
                 logger.debug(r.text)
             else:
                 try:
-                    cache.set('netdiff', data['getpoolstatus']['data']['networkdiff'])
-                    cache.set('nethashrate', data['getpoolstatus']['data']['nethashrate'])
-                    cache.set('netheight', data['getpoolstatus']['data']['nextnetworkblock'])
+                    cache.set('netdiff', data['getpoolstatus']['data']['networkdiff'], 60 * 60)
+                    cache.set('nethashrate', data['getpoolstatus']['data']['nethashrate'], 60 * 60)
+                    cache.set('netheight', data['getpoolstatus']['data']['nextnetworkblock'], 60 * 60)
                 except KeyError:
                     logger.warn("Values not given in proper MPOS format. "
                                 "We got {}".format(data))

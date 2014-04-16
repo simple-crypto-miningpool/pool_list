@@ -9,16 +9,28 @@ main = Blueprint('main', __name__)
 
 @cache.cached(timeout=10, key_prefix='last_block_time')
 def top_pools():
-    return sorted(Pool.query, key=lambda x: x.last_hashrate)[:20]
+    nethash = cache.get('nethashrate')
+    sorted_pools = sorted(Pool.query, key=lambda x: x.last_hashrate)
+    top_total = sum([p.last_hashrate for p in sorted_pools[:20]])
+    other_total = sum([p.last_hashrate for p in sorted_pools[19:]])
+    top = [dict(label=pool.name, value=pool.last_hashrate)
+           for pool in sorted_pools[:20]]
+    if nethash:
+        nethash = nethash / 1000000.0
+        unknown_total = nethash - top_total - other_total
+        top.append(dict(label="Unlisted Sources", value=unknown_total))
+    if other_total > 0:
+        top.append(dict(label="Other Pools", value=other_total))
+    return top
 
 
 @main.route("/")
 def home():
     pools = Pool.query.all()
     nethash = cache.get('nethashrate')
-    nethash = '{:,} MH/s'.format(nethash) if nethash else "Unkn"
+    nethash = '{:,} MH/s'.format(round(nethash / 1000000.0, 2)) if nethash else "Unkn"
     netdiff = cache.get('netdiff')
-    netdiff = '{:,}'.format(netdiff) if netdiff else "Unkn"
+    netdiff = '{:,}'.format(round(netdiff, 2)) if netdiff else "Unkn"
     netheight = cache.get('netheight')
     netheight = '{:,}'.format(netheight - 1) if netheight else "Unkn"
     total_workers = sum([p.last_workers for p in pools])
@@ -28,4 +40,5 @@ def home():
                            pools=pools,
                            nethash=nethash,
                            netdiff=netdiff,
+                           top_pools=top_pools(),
                            netheight=netheight)

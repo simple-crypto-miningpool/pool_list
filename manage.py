@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 root = os.path.abspath(os.path.dirname(__file__) + '/../')
 
 from pool_list.models import Pool
-from pool_list.tasks import update_pools, update_payout_type
+from pool_list.tasks import update_pools, update_payout_type, update_net_stats
 from flask import current_app, _request_ctx_stack
 
 root = logging.getLogger()
@@ -46,6 +46,12 @@ def init_db():
         db.session.commit()
         db.drop_all()
         db.create_all()
+
+
+@manager.command
+def update_net_stats_cmd():
+    """ Manually runs the poll pools command """
+    update_net_stats()
 
 
 @manager.command
