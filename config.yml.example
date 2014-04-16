@@ -1,0 +1,47 @@
+# General
+# =======================================================================
+# The postgresql database connection configuration
+SQLALCHEMY_DATABASE_URI: postgresql://pool_list:testing@localhost:5432/pool_list
+# the session encryption key
+SECRET_KEY: 'somethting_really_secret'
+
+# Celery configuration
+# =======================================================================
+# Celery configuration options. Since celery is run under a flask context
+# then thses are settings for the celery worker.
+celery:
+    CELERY_ACCEPT_CONTENT: ['pickle', 'json', 'msgpack', 'yaml']
+    # the name of the queue you'll recieve tasks from powerpool on. should
+    # match the default queue setting in powerpool instances that connect with
+    # this task handler
+    #CELERY_QUEUES:
+    #    doge:
+    #        exchange: doge
+    #        binding_key: doge
+    BROKER_URL: 'amqp://guest:guest@localhost:5672/doge'
+# set this to true and celery will only run scheduled tasks to refresh cache
+# objects. This allows you to run a staging version on the same database,
+# but with separate caches
+#stage: False
+
+# Cache configuration
+# ========================================================================
+# The cache database that redis will use
+#main_cache:
+#    CACHE_REDIS_DB: 1
+
+# Template Abstraction
+# =======================================================================
+# the path that will be postfixed with the current git hash in the footer.
+# comment out to remove the footer mark
+repopath: https://github.com/simplecrypto/pool_list/commit/
+# the block reward. Used to calculate averages, etc
+# host for static assets e.g. {assets_address}/css/main.css
+assets_address: http://localhost:9400/static
+
+# Logging
+# =======================================================================
+# where all webserver exceptions and logging messages will get put
+#log_file = webserver.log
+# all management commands will be logged here
+#manage_log_file = manage.log
