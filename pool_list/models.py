@@ -37,7 +37,6 @@ class Pool(base):
     typ = db.Column(db.String, nullable=False)
     link = db.Column(db.String)
     api_link = db.Column(db.String)
-    last_checkin = db.Column(db.DateTime)
 
     @classmethod
     def create(cls, name, typ, link, api_link):

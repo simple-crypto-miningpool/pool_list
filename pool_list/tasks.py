@@ -113,8 +113,8 @@ def update_pool(self, pool, slice_time):
             except KeyError:
                 logger.error("Values not given in proper MPOS format. "
                              "We got {}".format(data))
-
-            log_pool(workers, hashrate, pool)
+            else:
+                log_pool(workers, hashrate, pool)
 
     except Exception:
         logger.error("Unhandled exception in estimating pplns", exc_info=True)
