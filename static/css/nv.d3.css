@@ -789,6 +789,6 @@ Interactive Layer
     color:#000;
 }
 
-#chart2 > svg > g > g > g.nv-legendWrap > g > g > g > text {
+svg text {
     stroke:#5F5F5F;
 }

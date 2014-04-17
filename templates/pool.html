@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+<div class="container">
+  <div class="row page-header">
+    <h1 style="word-wrap:break-word;margin-bottom:2px;" class="text-left">
+      Pool Stats - {{ pool.name }}
+    </h1>
+    <br>
+
+    <h2 style="word-wrap:break-word;margin-bottom:2px;" class="text-left">
+      Pool Hashrate
+    </h2>
+    <br>
+    <div id="chart" style="max-height:500px;">
+      <svg></svg>
+    </div>
+    <h2 style="word-wrap:break-word;margin-bottom:2px;" class="text-left">
+      Pool Workers
+    </h2>
+    <br>
+    <div id="chart3" style="max-height:500px;">
+      <svg></svg>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

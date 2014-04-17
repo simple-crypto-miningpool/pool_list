@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, current_app
+from flask import render_template, Blueprint
 
 from .models import Pool
 from . import root, cache
@@ -42,3 +42,9 @@ def home():
                            netdiff=netdiff,
                            top_pools=top_pools(),
                            netheight=netheight)
+    return render_template('home.html', pools=pools)
+
+@main.route("/pool/<int:pool_id>")
+def pool(pool_id):
+    pool = Pool.query.filter_by(id=pool_id).first()
+    return render_template('pool.html', pool=pool)
