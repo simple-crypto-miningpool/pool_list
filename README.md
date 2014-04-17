@@ -19,10 +19,10 @@ in the Gruntfile to run it manually and track down the problem.
 Installation for Prod on Ubuntu 12.04
 =====================================
 
-  git clone https://github.com/simplecrypto/pool_list.git
-  cd pool_list
-  mkvirtualenv pl
-  pip install -r requirements; pip install -e .
+    git clone https://github.com/simplecrypto/pool_list.git
+    cd pool_list
+    mkvirtualenv pl
+    pip install -r requirements; pip install -e .
   
 Add an upstart task for Gunicorn
 
