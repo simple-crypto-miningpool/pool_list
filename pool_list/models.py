@@ -53,7 +53,7 @@ class Pool(base):
                     filter_by(typ='hashrate', pool=self.id).
                     order_by(FifteenMinutePool.time.desc()).first().value) / 1000.0
         except AttributeError:
-            return None
+            return 0
 
     def get_last_workers(self):
         """ Returns workers from the last sample """
@@ -62,7 +62,7 @@ class Pool(base):
                     filter_by(typ='workers', pool=self.id).
                     order_by(FifteenMinutePool.time.desc()).first().value)
         except AttributeError:
-            return None
+            return 0
 
     @property
     def output_payout_type(self):
@@ -83,6 +83,24 @@ class Pool(base):
         if hr and wrk:
             return round(hr / wrk * 1000, 2)
         return 0
+
+    @property
+    def output_last_hashrate(self):
+        if self.last_hashrate:
+            return str(self.last_hashrate) + " MH/s"
+        return "Unavail"
+
+    @property
+    def output_last_workers(self):
+        if self.last_workers:
+            return str(self.last_workers)
+        return "Unavail"
+
+    @property
+    def output_average_worker(self):
+        if self.average_worker:
+            return str(self.average_worker) + " KH/s/worker"
+        return "Unavail"
 
     last_workers = cached_property(get_last_workers)
     last_hashrate = cached_property(get_last_hashrate)
