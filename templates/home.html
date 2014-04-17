@@ -98,8 +98,8 @@ $(document).ready(function() {
           <td>{{ pool.output_payout_type }}</td>
           <td>{{ pool.last_workers }}</td>
           <td>{{ pool.output_fee }}</td>
-          <td>{{ '{:,}'.format(pool.last_hashrate / 1000.0) }} MH/s</td>
-          <td>{{ '{:,}'.format((pool.last_hashrate / pool.last_workers) | round (2)) }} KH/s/worker</td>
+          <td data-sort-value="{{ pool.last_hashrate }}">{{ pool.last_hashrate }} MH/s</td>
+          <td data-sort-value="{{ pool.average_worker }}">{{ pool.average_worker }} KH/s/worker</td>
           <td></td>
           <td></td>
         </tr>
