@@ -54,23 +54,7 @@ $(document).ready(function() {
     return chart;
     });
 
-
-
-    //Pie chart example data. Note how there is only a single array of key-value pairs.
-    function hashrate_data() {
-          var obj = { "key" : "North America" ,
-          "values" : [ [ 1025409600000 , 23.041422681023] , [ 1028088000000 , 19.854291255832],
-           [ 1030766400000 , 21.02286281168],
-           [ 1033358400000 , 22.093608385173],
-           [ 1036040400000 , 25.108079299458],
-           [ 1038632400000 , 26.982389242348] ]
-          }
-        return [obj]
-    }
-
-
     // graph for pool workers
-
     nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
                   .x(function(d) { return d[0] })   //We can modify the data accessor functions...
@@ -97,17 +81,4 @@ $(document).ready(function() {
 
     return chart;
     });
-
-    //Pie chart example data. Note how there is only a single array of key-value pairs.
-    function worker_data() {
-          var obj = { "key" : "North America" ,
-          "values" : [ [ 1025409600000 , 23.041422681023] , [ 1028088000000 , 19.854291255832],
-           [ 1030766400000 , 21.02286281168],
-           [ 1033358400000 , 22.093608385173],
-           [ 1036040400000 , 25.108079299458],
-           [ 1038632400000 , 26.982389242348] ]
-          }
-        return [obj]
-    }
-
 });

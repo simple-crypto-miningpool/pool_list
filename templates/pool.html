@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% block body %}
 
+<script>
+  function hashrate_data() {
+    var obj = { "key" : "Pool Hashrate" ,
+          "values" : {{ hashrate_data | tojson }}
+        }
+      return [obj]
+  }
+  function worker_data() {
+        var obj = { "key" : "Pool Workers" ,
+          "values" : {{ worker_data | tojson }}
+        }
+      return [obj]
+  }
+</script>
 
 <div class="container">
   <div class="row page-header">

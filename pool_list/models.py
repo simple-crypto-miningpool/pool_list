@@ -203,7 +203,7 @@ class OneHour(object):
 
 
 class FifteenMinute(object):
-    window = timedelta(days=1)
+    window = timedelta(days=2)
     slice = timedelta(minutes=15)
     slice_seconds = slice.total_seconds()
 

@@ -1,7 +1,11 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, current_app
 
-from .models import Pool
-from . import root, cache
+import time
+import datetime
+import calendar
+
+from .models import Pool, FifteenMinutePool
+from . import root, cache, db
 
 
 main = Blueprint('main', __name__)
@@ -44,7 +48,50 @@ def home():
                            netheight=netheight)
     return render_template('home.html', pools=pools)
 
+
+def get_typ(typ, typ_string, pool_id, filter_func=lambda x: x):
+    """ Gets the latest slices of a specific size. window open toggles
+    whether we limit the query to the window size or not. We disable the
+    window when compressing smaller time slices because if the crontab
+    doesn't run we don't want a gap in the graph. This is caused by a
+    portion of data that should already be compressed not yet being
+    compressed. """
+    # grab the correctly sized slices
+    base = db.session.query(typ).filter_by(typ=typ_string, pool=pool_id)
+    grab = typ.floor_time(datetime.datetime.utcnow()) - typ.window
+
+    step = int(typ.slice_seconds)
+    end = ((int(time.time()) // step) * step) - (step * 2)
+    start = end - int(typ.window.total_seconds()) + (step * 2)
+    current_app.logger.info(str(("Times:", end, start, step)))
+
+    vals = {calendar.timegm(slc.time.utctimetuple()): slc.value
+            for slc in base.filter(typ.time >= grab)}
+
+    lst = []
+    for stamp in xrange(start, end, step):
+        if stamp in vals:
+            lst.append((stamp * 1000, filter_func(vals[stamp])))
+        else:
+            lst.append((stamp * 1000, 0))
+
+    return lst
+
+
+@cache.memoize(timeout=360)
+def pool_stats(pool):
+    hashrate_data = get_typ(FifteenMinutePool, pool_id=pool.id,
+                            typ_string='hashrate', filter_func=lambda x: x / 1000.0)
+    worker_data = get_typ(FifteenMinutePool, pool_id=pool.id,
+                          typ_string='workers')
+    return hashrate_data, worker_data
+
+
 @main.route("/pool/<int:pool_id>")
 def pool(pool_id):
     pool = Pool.query.filter_by(id=pool_id).first()
-    return render_template('pool.html', pool=pool)
+    hashrate_data, worker_data = pool_stats(pool)
+    return render_template('pool.html',
+                           pool=pool,
+                           hashrate_data=hashrate_data,
+                           worker_data=worker_data)
