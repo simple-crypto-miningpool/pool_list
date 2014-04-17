@@ -43,6 +43,8 @@ $(document).ready(function() {
     });
 
     chart.yAxis
+        .axisLabel('MHash/sec')
+        .axisLabelDistance(30)
         .tickFormat(d3.format(',.2f'));
 
     d3.select('#chart svg')
@@ -71,6 +73,8 @@ $(document).ready(function() {
     });
 
     chart.yAxis
+        .axisLabel('Workers')
+        .axisLabelDistance(30)
         .tickFormat(d3.format(',.2f'));
 
     d3.select('#chart3 svg')
