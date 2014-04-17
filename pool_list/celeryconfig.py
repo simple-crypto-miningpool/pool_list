@@ -11,7 +11,7 @@ database_tasks = {
         'schedule': timedelta(minutes=15),
     },
     'update_net_state': {
-        'task': 'pool_list.tasks.update_net_state',
+        'task': 'pool_list.tasks.update_net_stats',
         'schedule': timedelta(minutes=15),
     },
 }
