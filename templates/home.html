@@ -9,7 +9,7 @@
         <div class="panel-body text-center">
           <small>Network Hashrate</small>
           <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="right"
-                       title=""></i>
+                       title="This hashrate is estimated based on the current difficulty. The equation is to calculate it yourself is (difficulty*(2^32))/block solve time"></i>
                      <br><h4><p><span>{{ nethash }}</span></p></h4>
         </div>
       </div>
@@ -19,7 +19,7 @@
         <div class="panel-body text-center">
           <small>Network Difficulty</small>
           <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="right"
-                       title=""></i>
+                       title="Network difficulty measures how difficult it is to solve a block. It is dynamically adjusted by the network to try to maintain a steady flow of currency."></i>
                      <br><h4><p><span>{{ netdiff }}</span></p></h4>
         </div>
       </div>
@@ -48,7 +48,7 @@
 </div>
 
 <h2>Network Breakdown</h2>
-<div id="chart2">
+<div id="chart2" style="max-height:600px;">
   <svg></svg>
 </div>
 

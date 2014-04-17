@@ -792,3 +792,7 @@ Interactive Layer
 svg text {
     stroke:#5F5F5F;
 }
+
+svg > g > g > g.nv-pieWrap > g > g > g.nv-pieLabels > g > text {
+    stroke:#fff;
+}

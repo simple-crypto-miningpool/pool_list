@@ -3,6 +3,7 @@ $(document).ready(function() {
         // graph for donut chart
         nv.addGraph(function() {
           var chart = nv.models.pieChart()
+              .margin({right: 0, left: 0})
               .x(function(d) { return d.label })
               .y(function(d) { return d.value })
               .showLabels(true)     //Display pie labels
@@ -16,6 +17,8 @@ $(document).ready(function() {
                 .datum(networkData())
                 .transition().duration(350)
                 .call(chart);
+
+            nv.utils.windowResize(chart.update);
 
 
           return chart;
