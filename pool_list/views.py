@@ -10,7 +10,7 @@ main = Blueprint('main', __name__)
 @cache.cached(timeout=10, key_prefix='last_block_time')
 def top_pools():
     nethash = cache.get('nethashrate')
-    sorted_pools = sorted(Pool.query, key=lambda x: x.last_hashrate)
+    sorted_pools = sorted([p for p in Pool.query if p.last_hashrate], key=lambda x: x.last_hashrate)
     top_total = sum([p.last_hashrate for p in sorted_pools[:20]])
     other_total = sum([p.last_hashrate for p in sorted_pools[19:]])
     top = [dict(label=pool.name, value=pool.last_hashrate)
@@ -33,7 +33,7 @@ def home():
     netdiff = '{:,}'.format(round(netdiff, 2)) if netdiff else "Unkn"
     netheight = cache.get('netheight')
     netheight = '{:,}'.format(netheight - 1) if netheight else "Unkn"
-    total_workers = sum([p.last_workers for p in pools])
+    total_workers = sum([p.last_workers or 0 for p in pools])
 
     return render_template('home.html',
                            total_workers=total_workers,
