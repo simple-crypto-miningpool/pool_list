@@ -79,7 +79,6 @@ $(document).ready(function() {
     <table id="poolTable" class="table table-striped table-hover tablesorter">
       <thead>
         <tr>
-          <th>#</th>
           <th>Name</th>
           <th>Payout Type</th>
           <th>Workers</th>
@@ -91,7 +90,6 @@ $(document).ready(function() {
       <tbody>
       {% for pool in pools %}
         <tr>
-          <td>{{ loop.index }}</td>
           <td><a href="/pool/{{ pool.id }}">{{ pool.name }}</a><small><a href="{{ pool.link }}">
             <i class="fa fa-external-link" data-toggle="tooltip" data-placement="right"
                        title=""></i></a></small></td>
