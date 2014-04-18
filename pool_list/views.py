@@ -61,9 +61,8 @@ def get_typ(typ, typ_string, pool_id, filter_func=lambda x: x):
     grab = typ.floor_time(datetime.datetime.utcnow()) - typ.window
 
     step = int(typ.slice_seconds)
-    end = ((int(time.time()) // step) * step) - (step * 2)
-    start = end - int(typ.window.total_seconds()) + (step * 2)
-    current_app.logger.info(str(("Times:", end, start, step)))
+    end = ((int(time.time()) // step) * step) - step
+    start = end - int(typ.window.total_seconds()) + step
 
     vals = {calendar.timegm(slc.time.utctimetuple()): slc.value
             for slc in base.filter(typ.time >= grab)}
