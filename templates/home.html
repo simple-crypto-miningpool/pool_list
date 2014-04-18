@@ -57,12 +57,24 @@
 function networkData() {
   return  {{ top_pools | tojson }};
 }
+function hashrate_data() {
+  var obj = { "key" : "Pool Hashrate" ,
+  "values" : {}
+      }
+    return [obj]
+}
+function worker_data() {
+      var obj = { "key" : "Pool Workers" ,
+        "values" : {}
+      }
+    return [obj]
+}
 $(document).ready(function() {
   $("#poolTable").tablesorter({
     headers: {
       1: { sorter: false }
     },
-    sortList : [[ 5,1 ]], // hashrate default
+    sortList : [[ 4,1 ]], // hashrate default
     textExtraction: function(node) {
       var attr = $(node).attr('data-sort-value');
       if (typeof attr !== 'undefined' && attr !== false) {
