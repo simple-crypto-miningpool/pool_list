@@ -153,7 +153,7 @@ def update_pool(self, pool, slice_time):
 
             gaddr = pool.api_link.rsplit("/", 1)[0] + "/global_stats"
             try:
-                r = grab_cloudflare(gaddr, timeout=2)
+                r = grab_cloudflare(gaddr, timeout=5)
                 data = r.json()
             except Exception:
                 logger.warn("Unable to connect to p2pool node {}".format(gaddr))
@@ -174,7 +174,7 @@ def update_pool(self, pool, slice_time):
                 # the list
                 data = None
                 try:
-                    r = grab_cloudflare(addr, timeout=2)
+                    r = grab_cloudflare(addr, timeout=5)
                     data = r.json()
                 except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
                     logger.warn("Unable to connect to p2pool node on 9171 {}".format(addr))
@@ -182,8 +182,10 @@ def update_pool(self, pool, slice_time):
                     logger.warn("Unkown problem connection to p2pool", exc_info=True)
 
                 if data:
-                    logger.debug("Grabbed stats {}".format(data))
-                    workers += len(data['miner_hash_rates'])
+                    worker_dat = len(data['miner_hash_rates'])
+                    logger.info("Grabbed stats. Adding {} to the worker count"
+                                .format(worker_dat))
+                    workers += worker_dat
 
             log_pool(workers, hashrate / 1000.0, pool)
 
