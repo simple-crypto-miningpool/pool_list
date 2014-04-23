@@ -63,7 +63,8 @@ def update_net_stats(self):
 
         db.session.commit()
     except Exception as exc:
-        logger.error("Unhandled exception in estimating pplns", exc_info=True)
+        logger.error("Unhandled exception in update_net_stats", exc_info=True)
+        db.session.rollback()
         raise self.retry(exc=exc)
 
 
@@ -95,6 +96,7 @@ def update_payout_type(self):
 
     except Exception as exc:
         logger.error("Unhandled exception in estimating pplns", exc_info=True)
+        db.session.rollback()
         raise self.retry(exc=exc)
 
 
@@ -113,6 +115,7 @@ def update_pools(self):
 
     except Exception as exc:
         logger.error("Unhandled exception in update pools", exc_info=True)
+        db.session.rollback()
         raise self.retry(exc=exc)
 
 
@@ -195,4 +198,5 @@ def update_pool(self, pool, slice_time):
         db.session.commit()
 
     except Exception:
+        db.session.rollback()
         logger.error("Unhandled exception in update_pool", exc_info=True)
