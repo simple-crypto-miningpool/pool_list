@@ -22,6 +22,9 @@ def top_pools():
     if nethash:
         nethash = nethash / 1000000.0
         unknown_total = nethash - top_total - other_total
+        # Make sure 'unknown' is never negative
+        if unknown_total < 0:
+            unknown_total = 0
         top.append(dict(label="Unlisted Sources", value=unknown_total))
     if other_total > 0:
         top.append(dict(label="Other Pools", value=other_total))

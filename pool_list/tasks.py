@@ -192,6 +192,29 @@ def update_pool(self, pool, slice_time):
 
             log_pool(workers, hashrate / 1000.0, pool)
 
+        elif pool.typ == 'coinotron':
+            try:
+                r = grab_cloudflare(pool.api_link)
+                data = r.json()
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+                logger.warn("Unable to connect to pool {}".format(pool.api_link))
+                return
+            except Exception:
+                logger.warn("Unkown problem scraping from pool {}"
+                            .format(pool.api_link), exc_info=True)
+                return
+
+            try:
+                for coinotron_pool in data:
+                    if coinotron_pool['pool_name'] == "VTC":
+                        workers = coinotron_pool['MinersNumber']
+                        hashrate = coinotron_pool['hashrate'] / 1000
+            except KeyError:
+                logger.error("Values not given in proper Coinotron format. "
+                             "We got {}".format(data))
+            else:
+                log_pool(workers, hashrate, pool)
+
         else:
             logger.warn("Unknown pool type: {}".format(pool.typ))
 
