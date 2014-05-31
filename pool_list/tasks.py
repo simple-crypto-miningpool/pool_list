@@ -153,6 +153,7 @@ def update_pool(self, pool, slice_time):
         elif pool.typ == 'p2pool':
             hashrate = 0
             workers = 0
+            data = None
 
             gaddr = pool.api_link.rsplit("/", 1)[0] + "/global_stats"
             try:
@@ -169,6 +170,9 @@ def update_pool(self, pool, slice_time):
                 data = r.json()
             except Exception:
                 logger.warn("Unable to connect to {}".format(pool.api_link))
+
+            if not data:
+                return
 
             for addr in data.split(" "):
                 addr = "http://" + addr.split(":")[0] + ":9171/local_stats"
@@ -211,6 +215,27 @@ def update_pool(self, pool, slice_time):
                         hashrate = coinotron_pool['hashrate'] / 1000
             except KeyError:
                 logger.error("Values not given in proper Coinotron format. "
+                             "We got {}".format(data))
+            else:
+                log_pool(workers, hashrate, pool)
+
+        elif pool.typ == 'gmc':
+            try:
+                r = grab_cloudflare(pool.api_link)
+                data = r.json()
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+                logger.warn("Unable to connect to pool {}".format(pool.api_link))
+                return
+            except Exception:
+                logger.warn("Unkown problem scraping from pool {}"
+                            .format(pool.api_link), exc_info=True)
+                return
+
+            try:
+                workers = data['workers']
+                hashrate = data['hashrate']
+            except KeyError:
+                logger.error("Values not given in proper Give-Me-Coins format. "
                              "We got {}".format(data))
             else:
                 log_pool(workers, hashrate, pool)
