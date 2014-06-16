@@ -52,6 +52,8 @@ def update_net_stats(self):
                 logger.warn("Unable to connect to {}".format(pool.api_link))
             else:
                 try:
+                    if data['getpoolstatus']['data']['networkdiff'] == 1:
+                        continue
                     cache.set('netdiff', data['getpoolstatus']['data']['networkdiff'], 60 * 60)
                     cache.set('nethashrate', data['getpoolstatus']['data']['nethashrate'], 60 * 60)
                     cache.set('netheight', data['getpoolstatus']['data']['nextnetworkblock'], 60 * 60)
@@ -133,7 +135,7 @@ def update_pool(self, pool, slice_time):
             try:
                 r = grab_cloudflare(pool.api_link)
                 data = r.json()
-            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
                 logger.warn("Unable to connect to pool {}".format(pool.api_link))
                 return
             except Exception:
@@ -232,7 +234,7 @@ def update_pool(self, pool, slice_time):
                 return
 
             try:
-                workers = data['workers']
+                workers = int(data['workers'])
                 hashrate = data['hashrate']
             except KeyError:
                 logger.error("Values not given in proper Give-Me-Coins format. "
