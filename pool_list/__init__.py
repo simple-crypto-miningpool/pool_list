@@ -2,12 +2,15 @@ import subprocess
 import logging
 import os
 import yaml
+import socket
 
 from datetime import datetime
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from jinja2 import FileSystemLoader
 from flask.ext.cache import Cache
+
+socket.setdefaulttimeout(10)
 
 
 root = os.path.abspath(os.path.dirname(__file__) + '/../')
